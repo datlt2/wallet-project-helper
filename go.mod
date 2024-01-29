@@ -1,5 +1,4 @@
-module Helper
-
+module github.com/datlt2/wallet-project-helper
 go 1.21.5
 
 require (
