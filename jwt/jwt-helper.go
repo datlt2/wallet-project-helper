@@ -1,8 +1,10 @@
 package jwtHelper
 
 import (
+	"errors"
 	"github.com/dgrijalva/jwt-go"
 	log "github.com/sirupsen/logrus"
+	"strings"
 	"time"
 )
 
@@ -32,6 +34,15 @@ func CreateToken(userID string) (string, error) {
 // Verify token depend on public key
 func VerifyToken(tokenString string) (*jwt.Token, error) {
 	log.Infof("HP-Verify token %v", tokenString)
+
+	// Remove unnecessary string
+	sep := strings.Split(tokenString, " ")
+	if len(sep) > 1 {
+		tokenString = sep[len(sep)-1]
+	} else {
+		tokenString = sep[0]
+	}
+
 	// Generate public key
 	key, err := jwt.ParseRSAPublicKeyFromPEM([]byte(publicKey))
 
@@ -45,6 +56,20 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 	}
 
 	return token, nil
+}
+
+// Verify token info
+func VerifyTokenInfo(userID string, tokenInfo jwt.MapClaims) (bool, error) {
+	if userID != tokenInfo["user_id"] {
+		return false, errors.New("Token is not correct")
+	}
+	startTime, _ := time.Parse(time.RFC3339, tokenInfo["start"].(string))
+	expiredTime, _ := time.Parse(time.RFC3339, tokenInfo["expired"].(string))
+
+	if time.Now().After(startTime) && time.Now().Before(expiredTime) {
+		return true, nil
+	}
+	return false, errors.New("Token is expired")
 }
 
 const (
