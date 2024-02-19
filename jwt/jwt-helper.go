@@ -59,10 +59,7 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 }
 
 // Verify token info
-func VerifyTokenInfo(userID string, tokenInfo jwt.MapClaims) (bool, error) {
-	if userID != tokenInfo["user_id"] {
-		return false, errors.New("Token is not correct")
-	}
+func VerifyTokenInfo(tokenInfo jwt.MapClaims) (bool, error) {
 	startTime, _ := time.Parse(time.RFC3339, tokenInfo["start"].(string))
 	expiredTime, _ := time.Parse(time.RFC3339, tokenInfo["expired"].(string))
 

@@ -32,7 +32,7 @@ func OpenAllLogFiles() {
 	// Set the log level for the info logger
 	log.SetLevel(log.DebugLevel)
 
-	// Open the file for writing grpc-client logs
+	// Open the file for writing grpc logs
 	logFile, err := OpenLogFile(currentDir + "/logs/grpc.log")
 
 	// Create a new logger with the log file as the output
